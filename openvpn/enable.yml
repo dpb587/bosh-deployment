@@ -1,0 +1,62 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: openvpn
+    version: 2.1.2
+    url: https://dpb587-bosh-release-openvpn-us-east-1.s3.amazonaws.com/release/compiled/release-openvpn-2.1.2-on-ubuntu-trusty-stemcell-3312-compiled-20161119073510.tgz
+    sha1: 7a6d391904a02c2d757310beecb7bdcdcf1ac630
+
+- type: replace
+  path: /instance_groups/name=bosh/jobs/-
+  value:
+    name: openvpn
+    release: openvpn
+
+- type: replace
+  path: /instance_groups/name=bosh/properties/openvpn?
+  value:
+    server: "10.254.51.0 255.255.255.0"
+    push_routes:
+      - "10.254.50.4 255.255.255.255"
+      - "10.244.0.0 255.255.0.0"
+    ca_crt: ((openvpn_ca.certificate))
+    server_crt: ((openvpn_server.certificate))
+    server_key: ((openvpn_server.private_key))
+    crl_pem: ~
+    dh_pem: |
+      -----BEGIN DH PARAMETERS-----
+      MIIBCAKCAQEA/oih/YXvkf13npOIF5LW170/V5j4R20NjL/IzgdZUYMlsQtm5zMZ
+      LwA8Vk1v9UnSWkopAGuJ8gZxz4qKk2p2MLzHSDwXC5khGrrJlHfjn7H0lYilyFqn
+      2YhmfCQ7z7ih0jUS/iNf/+xUmfoJn/2OMEY3gmcAxAbtVRqNtGFwsTjtap3Rgbt9
+      /j7Xbrsp3JqSeWN3VSqMzAgUrjkkkv52HcDo4zA1KfN7m+ROj/uGxcrmvZr7G0RK
+      9yJ2f8I1x8EW3p+CmWhHcmoNyxxlfRHIsZ+82+BIessN99pSxCbjWvhggntFLRwC
+      fcrq5wk9ei7dzYjZHSPHqvhmmZgWKJZYQwIBAg==
+      -----END DH PARAMETERS-----
+
+- type: replace
+  path: /variables/-
+  value:
+    name: openvpn_ca
+    type: certificate
+    options:
+      common_name: openvpn
+
+- type: replace
+  path: /variables/-
+  value:
+    name: openvpn_server
+    type: certificate
+    options:
+      ca: openvpn_ca
+      common_name: server
+      eku_auth: server
+
+- type: replace
+  path: /variables/-
+  value:
+    name: openvpn_client
+    type: certificate
+    options:
+      ca: openvpn_ca
+      common_name: client
+      eku_auth: client

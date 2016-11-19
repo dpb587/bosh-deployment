@@ -61,3 +61,9 @@
     allow_host_access: true
     destroy_containers_on_start: true # avoids snapshots
     default_container_grace_time: 0
+
+- type: replace
+  path: /variables/-
+  value:
+    name: blobstore_agent_password
+    type: password
